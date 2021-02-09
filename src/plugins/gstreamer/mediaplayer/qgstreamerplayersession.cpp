@@ -350,7 +350,16 @@ void QGstreamerPlayerSession::loadFromUri(const QNetworkRequest &request)
         m_tags.clear();
         emit tagsChanged();
 
-        g_object_set(G_OBJECT(m_playbin), "uri", m_request.url().toEncoded().constData(), NULL);
+        QUrl requestUrl = m_request.url();
+        if (requestUrl.scheme() == QStringLiteral("dvb")) {
+            QString path = requestUrl.path();
+            if (path.startsWith(QLatin1Char('/'))) {
+                path = path.mid(1);
+            }
+            g_object_set(G_OBJECT(m_playbin), "uri", (QStringLiteral("dvb://") + path).toUtf8().constData(), NULL);
+        } else {
+            g_object_set(G_OBJECT(m_playbin), "uri", requestUrl.toEncoded().constData(), NULL);
+        }
 
         if (!m_streamTypes.isEmpty()) {
             m_streamProperties.clear();
