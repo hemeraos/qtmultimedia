@@ -1,5 +1,7 @@
 TARGET = gstmediaplayer
 
+PKGCONFIG += HemeraQt5SDKCore
+
 include(../common.pri)
 
 INCLUDEPATH += $$PWD

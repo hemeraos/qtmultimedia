@@ -56,6 +56,9 @@
 #include <QtCore/qdir.h>
 #include <QtCore/qstandardpaths.h>
 
+// For include paths
+#include <HemeraCore/Application>
+
 //#define DEBUG_PLAYBIN
 //#define DEBUG_VO_BIN_DUMP
 
@@ -338,6 +341,10 @@ void QGstreamerPlayerSession::loadFromUri(const QNetworkRequest &request)
         m_appSrc = 0;
     }
 #endif
+
+    if (request.url().scheme().startsWith(QLatin1String("resource")) && Hemera::Application::instance()) {
+        m_request.setUrl(QUrl::fromLocalFile(Hemera::Application::resourcePath(request.url().toString(QUrl::RemoveScheme))));
+    }
 
     if (m_playbin) {
         m_tags.clear();
